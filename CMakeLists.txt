@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.15)
 project(tinyxml2 VERSION 10.0.0)
 
-include(CTest)
-option(tinyxml2_BUILD_TESTING "Build tests for tinyxml2" "${BUILD_TESTING}")
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    include(CTest)
+endif()
 
+option(tinyxml2_BUILD_TESTING "Build tests for tinyxml2" "${BUILD_TESTING}")
+message("I am building tests for tinyxml2:" "${tinyxml2_BUILD_TESTING}")
 ##
 ## Honor tinyxml2_SHARED_LIBS to match install interface
 ##
@@ -15,12 +18,13 @@ endif ()
 ##
 ## Main library build
 ##
-
+message(${CMAKE_BUILD_TYPE} "THIS IS THE CURRENT BUILD TYPE")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
 add_library(tinyxml2 tinyxml2.cpp tinyxml2.h)
 add_library(tinyxml2::tinyxml2 ALIAS tinyxml2)
+
 
 # Uncomment the following line to require C++11 (or greater) to use tinyxml2
 # target_compile_features(tinyxml2 PUBLIC cxx_std_11)
@@ -42,6 +46,7 @@ set_target_properties(
     SOVERSION "${tinyxml2_VERSION_MAJOR}"
 )
 
+
 if (tinyxml2_BUILD_TESTING)
     add_executable(xmltest xmltest.cpp)
     target_link_libraries(xmltest PRIVATE tinyxml2::tinyxml2)
@@ -54,6 +59,7 @@ if (tinyxml2_BUILD_TESTING)
 
     set_tests_properties(xmltest PROPERTIES PASS_REGULAR_EXPRESSION ", Fail 0")
 endif ()
+
 
 ##
 ## Installation
